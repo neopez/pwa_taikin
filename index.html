@@ -66,6 +66,32 @@
         }
     </style>
 </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>都営浅草線 浅草駅 → 西馬込方面 電車情報</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Interフォントのインポート */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #fff; /* テキスト色を白に変更して黒背景に合うように */
+        }
+        .countdown-blue {
+            background-color: #3b82f6; /* Tailwindのblue-600 */
+        }
+        .countdown-orange {
+            background-color: #f97316; /* Tailwindのorange-600 */
+        }
+        .countdown-red {
+            background-color: #ef4444; /* Tailwindのred-500 */
+        }
+    </style>
+</head>
 <body class="min-h-screen flex flex-col items-center p-4 sm:p-6 bg-black">
 
     <div id="root" class="w-full max-w-md">
@@ -179,40 +205,52 @@
              */
             const updateTrainList = () => {
                 const now = new Date();
-                let potentialTrainsWithDates = [];
+                const allPotentialTrains = [];
 
-                // 今日の電車を追加
-                for (const train of trainSchedule) {
-                    const departure = new Date(now.getFullYear(), now.getMonth(), now.getDate(), train.hour, train.minute, 0);
-                    if (departure > now) { // 現在時刻より後の電車のみ
-                        potentialTrainsWithDates.push({
-                            time: formatTime(train.hour, train.minute),
-                            destination: train.destination,
-                            actualDepartureTime: departure // ソート用にDateオブジェクトも保持
-                        });
+                // 今日と明日の2日分の電車をまとめて処理
+                for (let i = 0; i < 2; i++) {
+                    const currentDay = new Date(now);
+                    currentDay.setDate(now.getDate() + i); // i=0で今日、i=1で明日
+
+                    for (const train of trainSchedule) {
+                        const departure = new Date(currentDay.getFullYear(), currentDay.getMonth(), currentDay.getDate(), train.hour, train.minute, 0);
+
+                        // 現在時刻より後の電車のみを追加
+                        if (departure > now) {
+                            allPotentialTrains.push({
+                                time: formatTime(train.hour, train.minute),
+                                destination: train.destination, // 元の目的地は保持
+                                actualDepartureTime: departure // ソート用にDateオブジェクトも保持
+                            });
+                        }
                     }
                 }
 
-                // 明日の電車を追加 (常に明日の日付で計算)
-                const tomorrow = new Date(now);
-                tomorrow.setDate(now.getDate() + 1);
-                for (const train of trainSchedule) {
-                    const departure = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), train.hour, train.minute, 0);
-                    potentialTrainsWithDates.push({
-                        time: formatTime(train.hour, train.minute),
-                        destination: train.destination,
-                        actualDepartureTime: departure // ソート用にDateオブジェクトも保持
-                    });
-                }
-
                 // actualDepartureTimeでソート
-                potentialTrainsWithDates.sort((a, b) => a.actualDepartureTime.getTime() - b.actualDepartureTime.getTime());
+                allPotentialTrains.sort((a, b) => a.actualDepartureTime.getTime() - b.actualDepartureTime.getTime());
 
-                // 表示用にtimeとdestinationのみを抽出し、最大5本に制限
-                const finalUpcomingTrains = potentialTrainsWithDates.slice(0, 5).map(train => ({
-                    time: train.time,
-                    destination: train.destination
-                }));
+                // 表示用にtimeと残り時間（秒数なし）を抽出し、最大5本に制限
+                const finalUpcomingTrains = allPotentialTrains.slice(0, 5).map(train => {
+                    const distance = train.actualDepartureTime.getTime() - now.getTime();
+                    // 分数に変換し、秒数を考慮して切り上げ
+                    const remainingMinutes = Math.ceil(distance / (1000 * 60));
+
+                    let remainingTimeText = '';
+                    if (remainingMinutes <= 0) {
+                        remainingTimeText = '発車済み';
+                    } else if (remainingMinutes < 60) {
+                        remainingTimeText = `${remainingMinutes}分後`;
+                    } else {
+                        // 60分以上の場合は空欄にする
+                        remainingTimeText = '';
+                    }
+
+                    return {
+                        time: train.time,
+                        displayRemainingTime: remainingTimeText, // 新しい表示用プロパティ
+                        destination: train.destination // 元の目的地も保持
+                    };
+                });
 
                 setUpcomingTrains(finalUpcomingTrains);
             };
@@ -239,7 +277,7 @@
                     </h1>
 
                     <div id="next-departure-info" className={`${countdownColorClass} text-white p-5 rounded-lg shadow-md text-center mb-6 w-full`}>
-                        <p id="next-departure-text" className="text-lg font-semibold mb-2">{nextDepartureInfo}</p>
+                        <p id="next-departure-text" className="text-xl font-semibold mb-2">{nextDepartureInfo}</p> {/* text-lg から text-xl に変更 */}
                         <div id="countdown" className="text-7xl sm:text-8xl font-bold tracking-tight">
                             {countdownText}
                         </div>
@@ -256,7 +294,7 @@
                                 upcomingTrains.map((train, index) => (
                                     <li key={index} className="p-2 bg-gray-900 rounded-md shadow-sm border border-gray-700 flex justify-between items-center">
                                         <span className="font-medium text-lg">{train.time}</span>
-                                        <span className="text-sm text-gray-500">{train.destination}行き</span>
+                                        <span className="text-sm text-gray-400">{train.displayRemainingTime}</span> {/* displayRemainingTimeを使用 */}
                                     </li>
                                 ))
                             )}
