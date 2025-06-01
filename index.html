@@ -49,9 +49,9 @@
         // Reactコンポーネントの定義
         const App = () => {
             // 電車の発車時刻データ (時と分で定義)
+            // 実際のアプリでは、外部APIからリアルタイムデータを取得します。
             // 18時から24時までの時刻に限定
             const trainSchedule = [
-                { hour: 8, minute: 54, destination: '西馬込' },
                 { hour: 18, minute: 1, destination: '西馬込' }, { hour: 18, minute: 16, destination: '西馬込' },
                 { hour: 18, minute: 27, destination: '西馬込' }, { hour: 18, minute: 40, destination: '西馬込' },
                 { hour: 18, minute: 47, destination: '西馬込' }, { hour: 19, minute: 7, destination: '西馬込' },
@@ -214,7 +214,7 @@
 
                     <div id="next-departure-info" className={`${countdownColorClass} text-white p-5 rounded-lg shadow-md text-center`}>
                         <p id="next-departure-text" className="text-lg font-semibold mb-2">{nextDepartureInfo}</p>
-                        <div id="countdown" className="text-6xl sm:text-7xl font-bold tracking-tight">
+                        <div id="countdown" className="text-7xl sm:text-8xl font-bold tracking-tight">
                             {countdownText}
                         </div>
                     </div>
