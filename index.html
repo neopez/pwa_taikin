@@ -39,37 +39,6 @@
 		});
 	}
 	</script>
-</head>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>都営浅草線 浅草駅 → 西馬込方面 電車情報</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        /* Interフォントのインポート */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            color: #fff; /* テキスト色を白に変更して黒背景に合うように */
-        }
-        .countdown-blue {
-            background-color: #3b82f6; /* Tailwindのblue-600 */
-        }
-        .countdown-orange {
-            background-color: #f97316; /* Tailwindのorange-600 */
-        }
-        .countdown-red {
-            background-color: #ef4444; /* Tailwindのred-500 */
-        }
-    </style>
-</head>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>都営浅草線 浅草駅 → 西馬込方面 電車情報</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -232,8 +201,8 @@
                 // 表示用にtimeと残り時間（秒数なし）を抽出し、最大5本に制限
                 const finalUpcomingTrains = allPotentialTrains.slice(0, 5).map(train => {
                     const distance = train.actualDepartureTime.getTime() - now.getTime();
-                    // 分数に変換し、秒数を考慮して切り上げ
-                    const remainingMinutes = Math.ceil(distance / (1000 * 60));
+                    // 分数に変換し、小数点以下を切り捨てる (Math.floor)
+                    const remainingMinutes = Math.floor(distance / (1000 * 60));
 
                     let remainingTimeText = '';
                     if (remainingMinutes <= 0) {
@@ -277,7 +246,7 @@
                     </h1>
 
                     <div id="next-departure-info" className={`${countdownColorClass} text-white p-5 rounded-lg shadow-md text-center mb-6 w-full`}>
-                        <p id="next-departure-text" className="text-xl font-semibold mb-2">{nextDepartureInfo}</p> {/* text-lg から text-xl に変更 */}
+                        <p id="next-departure-text" className="text-xl font-semibold mb-2">{nextDepartureInfo}</p>
                         <div id="countdown" className="text-7xl sm:text-8xl font-bold tracking-tight">
                             {countdownText}
                         </div>
