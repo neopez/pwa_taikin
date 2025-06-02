@@ -73,20 +73,20 @@
             // 実際のアプリでは、外部APIからリアルタイムデータを取得します。
             // 18時から24時までの時刻に限定
             const trainSchedule = [
-                { hour: 18, minute: 1, destination: '西馬込' }, { hour: 18, minute: 16, destination: '西馬込' },
-                { hour: 18, minute: 27, destination: '西馬込' }, { hour: 18, minute: 40, destination: '西馬込' },
-                { hour: 18, minute: 47, destination: '西馬込' }, { hour: 19, minute: 7, destination: '西馬込' },
-                { hour: 19, minute: 11, destination: '西馬込' }, { hour: 19, minute: 16, destination: '西馬込' },
-                { hour: 19, minute: 33, destination: '西馬込' }, { hour: 19, minute: 40, destination: '西馬込' },
-                { hour: 19, minute: 48, destination: '西馬込' }, { hour: 19, minute: 58, destination: '西馬込' },
-                { hour: 20, minute: 5, destination: '西馬込' }, { hour: 20, minute: 19, destination: '西馬込' },
-                { hour: 20, minute: 31, destination: '西馬込' }, { hour: 20, minute: 38, destination: '西馬込' },
-                { hour: 21, minute: 1, destination: '西馬込' }, { hour: 21, minute: 17, destination: '西馬込' },
-                { hour: 21, minute: 37, destination: '西馬込' }, { hour: 21, minute: 50, destination: '西馬込' },
-                { hour: 22, minute: 0, destination: '西馬込' }, { hour: 22, minute: 12, destination: '西馬込' },
-                { hour: 22, minute: 33, destination: '西馬込' }, { hour: 23, minute: 0, destination: '西馬込' },
-                { hour: 23, minute: 18, destination: '西馬込' }, { hour: 23, minute: 37, destination: '西馬込' },
-                { hour: 23, minute: 49, destination: '西馬込' },
+                { hour: 18, minute: 1 }, { hour: 18, minute: 16 },
+                { hour: 18, minute: 27 }, { hour: 18, minute: 40 },
+                { hour: 18, minute: 47 }, { hour: 19, minute: 7 },
+                { hour: 19, minute: 11 }, { hour: 19, minute: 16 },
+                { hour: 19, minute: 33 }, { hour: 19, minute: 40 },
+                { hour: 19, minute: 48 }, { hour: 19, minute: 58 },
+                { hour: 20, minute: 5 }, { hour: 20, minute: 19 },
+                { hour: 20, minute: 31 }, { hour: 20, minute: 38 },
+                { hour: 21, minute: 1 }, { hour: 21, minute: 17 },
+                { hour: 21, minute: 37 }, { hour: 21, minute: 50 },
+                { hour: 22, minute: 0 }, { hour: 22, minute: 12 },
+                { hour: 22, minute: 33 }, { hour: 23, minute: 0 },
+                { hour: 23, minute: 18 }, { hour: 23, minute: 37 },
+                { hour: 23, minute: 49 },
             ];
 
             // ステート変数
@@ -166,6 +166,7 @@
                 } else {
                     setCountdownText(`${String(remainingMinutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`);
                 }
+                // nextDepartureInfoは常に「西馬込行き」を含むように設定
                 setNextDepartureInfo(`${formatTime(nextTrainDeparture.getHours(), nextTrainDeparture.getMinutes())} 西馬込行き`);
             };
 
@@ -188,7 +189,6 @@
                         if (departure > now) {
                             allPotentialTrains.push({
                                 time: formatTime(train.hour, train.minute),
-                                destination: train.destination, // 元の目的地は保持
                                 actualDepartureTime: departure // ソート用にDateオブジェクトも保持
                             });
                         }
@@ -198,8 +198,11 @@
                 // actualDepartureTimeでソート
                 allPotentialTrains.sort((a, b) => a.actualDepartureTime.getTime() - b.actualDepartureTime.getTime());
 
+                // カウントダウンタイマーで表示している電車を除外し、次の5本を取得
+                const trainsForList = allPotentialTrains.slice(1); // 最初の1つをスキップ
+
                 // 表示用にtimeと残り時間（秒数なし）を抽出し、最大5本に制限
-                const finalUpcomingTrains = allPotentialTrains.slice(0, 5).map(train => {
+                const finalUpcomingTrains = trainsForList.slice(0, 5).map(train => {
                     const distance = train.actualDepartureTime.getTime() - now.getTime();
                     // 分数に変換し、小数点以下を切り捨てる (Math.floor)
                     const remainingMinutes = Math.floor(distance / (1000 * 60));
@@ -217,7 +220,6 @@
                     return {
                         time: train.time,
                         displayRemainingTime: remainingTimeText, // 新しい表示用プロパティ
-                        destination: train.destination // 元の目的地も保持
                     };
                 });
 
@@ -263,7 +265,8 @@
                                 upcomingTrains.map((train, index) => (
                                     <li key={index} className="p-2 bg-gray-900 rounded-md shadow-sm border border-gray-700 flex justify-between items-center">
                                         <span className="font-medium text-lg">{train.time}</span>
-                                        <span className="text-sm text-gray-400">{train.displayRemainingTime}</span> {/* displayRemainingTimeを使用 */}
+                                        {/* displayRemainingTime が空欄の場合は何も表示しない */}
+                                        <span className="text-sm text-gray-400">{train.displayRemainingTime}</span>
                                     </li>
                                 ))
                             )}
