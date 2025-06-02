@@ -49,6 +49,7 @@
         // Reactコンポーネントの定義
         const App = () => {
             // 電車の発車時刻データ (時と分で定義)
+            // 実際のアプリでは、外部APIからリアルタイムデータを取得します。
             // 18時から24時までの時刻に限定
             const trainSchedule = [
                 { hour: 18, minute: 1 }, { hour: 18, minute: 16 },
@@ -125,7 +126,7 @@
                 } else if (remainingMinutesTotal < 8) {
                     setCountdownColorClass('countdown-orange');
                 } else if (remainingMinutesTotal < 10) {
-                    setCountdownColorClass('countdown-lime'); // 新しい黄緑色
+                    setCountdownColorClass('countdown-green'); // 新しい緑色
                 } else {
                     setCountdownColorClass('countdown-blue');
                 }
@@ -228,7 +229,7 @@
                     </h1>
 
                     <div id="next-departure-info" className={`${countdownColorClass} text-white p-5 rounded-lg shadow-md text-center mb-6 w-full`}>
-                        <p id="next-departure-text" className="text-3xl font-semibold mb-2">{nextDepartureInfo}</p>
+                        <p id="next-departure-text" className="text-2xl font-semibold mb-2">{nextDepartureInfo}</p>
                         <div id="countdown" className="text-7xl sm:text-8xl font-bold tracking-tight">
                             {countdownText}
                         </div>
@@ -253,7 +254,7 @@
                         <p className="text-sm text-gray-500 mt-2 text-center">
                             令和6年11月25日改訂
                             <br />
-                            <a href="https://www.kotsu.metro.tokyo.jp/subway/timetable/asakusa/A18SD.html" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                            <a href="[https://www.kotsu.metro.tokyo.jp/subway/timetable/asakusa/A18SD.html](https://www.kotsu.metro.tokyo.jp/subway/timetable/asakusa/A18SD.html)" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
                                 都営浅草線 浅草駅 西馬込方面 時刻表
                             </a>
                         </p>
