@@ -15,14 +15,18 @@
             font-family: 'Inter', sans-serif;
             color: #fff; /* テキスト色を白に変更して黒背景に合うように */
         }
+        /* カウントダウンタイマーの枠色設定 (RGBでカスタマイズ可能) */
         .countdown-blue {
-            background-color: #3b82f6; /* Tailwindのblue-600 */
+            background-color: rgb(59, 130, 246); /* 青色 (Tailwind blue-600) - RGB値を変更してカスタマイズ */
         }
         .countdown-orange {
-            background-color: #f97316; /* Tailwindのorange-600 */
+            background-color: rgb(249, 115, 22); /* オレンジ色 (Tailwind orange-600) - RGB値を変更してカスタマイズ */
         }
         .countdown-red {
-            background-color: #ef4444; /* Tailwindのred-500 */
+            background-color: rgb(239, 68, 68); /* 赤色 (Tailwind red-500) - RGB値を変更してカスタマイズ */
+        }
+        .countdown-green {
+            background-color: rgb(66, 172, 82); /* 緑色 (Tailwind green-500) - RGB値を変更してカスタマイズ */
         }
     </style>
     <link rel="manifest" href="manifest.json">
@@ -49,22 +53,34 @@
         // Reactコンポーネントの定義
         const App = () => {
             // 電車の発車時刻データ (時と分で定義)
-            // 実際のアプリでは、外部APIからリアルタイムデータを取得します。
             // 18時から24時までの時刻に限定
             const trainSchedule = [
-                { hour: 18, minute: 1 }, { hour: 18, minute: 16 },
-                { hour: 18, minute: 27 }, { hour: 18, minute: 40 },
-                { hour: 18, minute: 47 }, { hour: 19, minute: 7 },
-                { hour: 19, minute: 11 }, { hour: 19, minute: 16 },
-                { hour: 19, minute: 33 }, { hour: 19, minute: 40 },
-                { hour: 19, minute: 48 }, { hour: 19, minute: 58 },
-                { hour: 20, minute: 5 }, { hour: 20, minute: 19 },
-                { hour: 20, minute: 31 }, { hour: 20, minute: 38 },
-                { hour: 21, minute: 1 }, { hour: 21, minute: 17 },
-                { hour: 21, minute: 37 }, { hour: 21, minute: 50 },
-                { hour: 22, minute: 0 }, { hour: 22, minute: 12 },
-                { hour: 22, minute: 33 }, { hour: 23, minute: 0 },
-                { hour: 23, minute: 18 }, { hour: 23, minute: 37 },
+                { hour: 18, minute: 1 },
+                { hour: 18, minute: 16 },
+                { hour: 18, minute: 27 },
+                { hour: 18, minute: 40 },
+                { hour: 18, minute: 47 },
+                { hour: 19, minute: 7 },
+                { hour: 19, minute: 11 },
+                { hour: 19, minute: 16 },
+                { hour: 19, minute: 33 },
+                { hour: 19, minute: 40 },
+                { hour: 19, minute: 48 },
+                { hour: 19, minute: 58 },
+                { hour: 20, minute: 5 }, 
+                { hour: 20, minute: 19 },
+                { hour: 20, minute: 31 },
+                { hour: 20, minute: 38 },
+                { hour: 21, minute: 1 }, 
+                { hour: 21, minute: 17 },
+                { hour: 21, minute: 37 },
+                { hour: 21, minute: 50 },
+                { hour: 22, minute: 0 },
+                { hour: 22, minute: 12 },
+                { hour: 22, minute: 33 },
+                { hour: 23, minute: 0 },
+                { hour: 23, minute: 18 },
+                { hour: 23, minute: 37 },
                 { hour: 23, minute: 49 },
             ];
 
@@ -246,7 +262,8 @@
                                 upcomingTrains.map((train, index) => (
                                     <li key={index} className="p-2 bg-gray-900 rounded-md shadow-sm border border-gray-700 flex justify-between items-center">
                                         <span className="font-medium text-lg">{train.time}</span>
-                                        <span className="text-sm text-gray-400">{train.displayRemainingTime}</span>
+                                        {/* text-sm から text-lg に変更 */}
+                                        <span className="font-medium text-lg text-gray-400">{train.displayRemainingTime}</span>
                                     </li>
                                 ))
                             )}
@@ -254,7 +271,7 @@
                         <p className="text-sm text-gray-500 mt-2 text-center">
                             令和6年11月25日改訂
                             <br />
-                            <a href="[https://www.kotsu.metro.tokyo.jp/subway/timetable/asakusa/A18SD.html](https://www.kotsu.metro.tokyo.jp/subway/timetable/asakusa/A18SD.html)" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                            <a href="https://www.kotsu.metro.tokyo.jp/subway/timetable/asakusa/A18SD.html" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
                                 都営浅草線 浅草駅 西馬込方面 時刻表
                             </a>
                         </p>
