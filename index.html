@@ -39,27 +39,6 @@
 		});
 	}
 	</script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        /* Interフォントのインポート */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            color: #fff; /* テキスト色を白に変更して黒背景に合うように */
-        }
-        .countdown-blue {
-            background-color: #3b82f6; /* Tailwindのblue-600 */
-        }
-        .countdown-orange {
-            background-color: #f97316; /* Tailwindのorange-600 */
-        }
-        .countdown-red {
-            background-color: #ef4444; /* Tailwindのred-500 */
-        }
-    </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 sm:p-6 bg-black">
 
@@ -141,11 +120,13 @@
                 const distance = nextTrainDeparture.getTime() - now.getTime();
                 const remainingMinutesTotal = Math.floor(distance / (1000 * 60));
 
-                // 色のロジックを更新
+                // 色のロジックを更新 (優先順位を考慮して記述)
                 if (remainingMinutesTotal < 6) {
                     setCountdownColorClass('countdown-red');
-                } else if (remainingMinutesTotal < 10) {
+                } else if (remainingMinutesTotal < 8) {
                     setCountdownColorClass('countdown-orange');
+                } else if (remainingMinutesTotal < 10) {
+                    setCountdownColorClass('countdown-lime'); // 新しい黄緑色
                 } else {
                     setCountdownColorClass('countdown-blue');
                 }
@@ -248,7 +229,7 @@
                     </h1>
 
                     <div id="next-departure-info" className={`${countdownColorClass} text-white p-5 rounded-lg shadow-md text-center mb-6 w-full`}>
-                        <p id="next-departure-text" className="text-xl font-semibold mb-2">{nextDepartureInfo}</p>
+                        <p id="next-departure-text" className="text-3xl font-semibold mb-2">{nextDepartureInfo}</p>
                         <div id="countdown" className="text-7xl sm:text-8xl font-bold tracking-tight">
                             {countdownText}
                         </div>
@@ -265,7 +246,6 @@
                                 upcomingTrains.map((train, index) => (
                                     <li key={index} className="p-2 bg-gray-900 rounded-md shadow-sm border border-gray-700 flex justify-between items-center">
                                         <span className="font-medium text-lg">{train.time}</span>
-                                        {/* displayRemainingTime が空欄の場合は何も表示しない */}
                                         <span className="text-sm text-gray-400">{train.displayRemainingTime}</span>
                                     </li>
                                 ))
